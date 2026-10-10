@@ -1,5 +1,5 @@
-const CACHE_NAME = "souklink-order-desk-v7";
-const APP_FILES = ["./", "./index.html", "./install.html", "./styles.css?v=5", "./app.js?v=6", "./manifest.webmanifest", "./icon.svg"];
+const CACHE_NAME = "souklink-order-desk-v8";
+const APP_FILES = ["./", "./index.html", "./install.html", "./styles.css?v=5", "./app.js?v=7", "./manifest.webmanifest", "./icon.svg"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)));
   self.skipWaiting();
