@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#187a59">
+  <title>Installer SoukLink Order Desk</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="install-page">
+  <main class="install-card">
+    <a class="brand" href="./"><span class="brand-mark">S</span><span>SoukLink <small>ORDER DESK</small></span></a>
+    <div class="eyebrow">APPLICATION POUR VOTRE ORDINATEUR</div>
+    <h1>Installer SoukLink Order Desk</h1>
+    <p class="install-intro">Le navigateur intégré à Codex ne peut pas installer une application. Ouvrez cette page dans Microsoft Edge ou Google Chrome sur votre ordinateur, puis suivez les étapes ci-dessous.</p>
+    <section class="install-steps">
+      <article><span class="install-number">01</span><div><h2>Microsoft Edge</h2><p>Ouvrez le menu <b>⋯</b>, puis choisissez <b>Plus d’outils → Applications → Installer ce site en tant qu’application</b>.</p></div></article>
+      <article><span class="install-number">02</span><div><h2>Google Chrome</h2><p>Ouvrez le menu <b>⋮</b>, puis choisissez <b>Caster, enregistrer et partager → Installer la page en tant qu’application</b>. Selon votre version, l’icône Installer peut aussi apparaître dans la barre d’adresse.</p></div></article>
+    </section>
+    <div class="install-note"><span>✓</span><p>Après installation, l’application s’ouvrira dans sa propre fenêtre. Vos commandes resteront enregistrées sur cet ordinateur.</p></div>
+    <div class="install-actions"><a class="button secondary" href="./">← Retour aux commandes</a><button class="button primary" id="copy-link">Copier le lien</button></div>
+    <p class="copy-feedback" id="copy-feedback" aria-live="polite"></p>
+  </main>
+  <script>
+    document.querySelector("#copy-link").addEventListener("click",async()=>{const feedback=document.querySelector("#copy-feedback");try{await navigator.clipboard.writeText("https://zinebbouskiri-byte.github.io/SoukLink/order-desk/");feedback.textContent="Lien copié. Collez-le dans Edge ou Chrome."}catch{feedback.textContent="Copiez l’adresse de cette page et ouvrez-la dans Edge ou Chrome."}});
+    if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+  </script>
+</body>
+</html>
