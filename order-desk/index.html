@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
   <div class="app-shell">
@@ -23,7 +23,7 @@
         <button class="nav-item" id="new-order-side"><span class="nav-icon">＋</span>Nouvelle commande</button>
       </nav>
       <div class="sidebar-bottom">
-        <div class="local-note"><span class="secure-dot"></span><div><b>Données sur cet appareil</b><small>Vos commandes restent privées dans ce navigateur.</small></div></div>
+        <div class="local-note"><span class="secure-dot"></span><div><b id="storage-title">Données sur cet appareil</b><small id="sync-status">Vos commandes restent privées dans ce navigateur.</small></div></div>
         <a class="store-link" href="../index.html" target="_blank" rel="noreferrer"><span>↗</span> Ouvrir la boutique</a>
       </div>
     </aside>
@@ -40,12 +40,13 @@
         <article class="stat-card"><div class="stat-top"><span>Commandes actives</span><span class="stat-icon blue">▤</span></div><strong id="stat-active">0</strong><small>À préparer ou à livrer</small></article>
         <article class="stat-card"><div class="stat-top"><span>Paiements en attente</span><span class="stat-icon amber">◷</span></div><strong id="stat-pending">0 MAD</strong><small id="stat-pending-count">0 commande</small></article>
         <article class="stat-card"><div class="stat-top"><span>Commandes terminées</span><span class="stat-icon violet">✓</span></div><strong id="stat-complete">0</strong><small>Livrées ou clôturées</small></article>
+        <article class="stat-card profit-card"><div class="stat-top"><span>Bénéfice estimé</span><span class="stat-icon green">◇</span></div><strong id="stat-profit">0 MAD</strong><small>Ventes moins coûts renseignés</small></article>
       </section>
 
       <section class="orders-panel">
-        <div class="panel-heading"><div><h2>Toutes les commandes</h2><p>Consultez, mettez à jour ou imprimez un reçu.</p></div><button class="button secondary" id="export-csv">↓ <span>Exporter CSV</span></button></div>
+        <div class="panel-heading"><div><h2>Toutes les commandes</h2><p>Consultez, mettez à jour ou imprimez un reçu.</p></div><div class="panel-tools"><button class="button secondary" id="backup-data">↧ <span>Sauvegarder</span></button><button class="button secondary" id="restore-data">↥ <span>Restaurer</span></button><button class="button secondary" id="cloud-toggle">☁ <span>Synchroniser</span></button><button class="button secondary" id="export-csv">↓ <span>CSV</span></button><input id="restore-file" type="file" accept="application/json,.json" hidden></div></div>
         <div class="toolbar"><label class="search-box"><span>⌕</span><input id="search" type="search" placeholder="Rechercher un client, un produit…" aria-label="Rechercher"></label><select id="status-filter" aria-label="Filtrer par statut"><option value="all">Tous les statuts</option><option value="new">Nouvelle</option><option value="processing">En préparation</option><option value="shipped">Expédiée</option><option value="delivered">Livrée</option><option value="cancelled">Annulée</option></select><select id="payment-filter" aria-label="Filtrer les paiements"><option value="all">Tous les paiements</option><option value="paid">Payé</option><option value="pending">En attente</option><option value="partial">Partiel</option></select></div>
-        <div class="table-wrap"><table><thead><tr><th>COMMANDE</th><th>CLIENT</th><th>DATE</th><th>STATUT</th><th>PAIEMENT</th><th class="right">TOTAL</th><th></th></tr></thead><tbody id="orders-body"></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>COMMANDE</th><th>CLIENT</th><th>DATE</th><th>STATUT</th><th>PAIEMENT</th><th class="right">TOTAL</th><th class="right">BÉNÉFICE</th><th></th></tr></thead><tbody id="orders-body"></tbody></table></div>
         <div class="empty-state" id="empty-state"><div class="empty-art">▤</div><h3>Aucune commande pour le moment</h3><p>Ajoutez votre première commande pour commencer à suivre vos ventes.</p><button class="button primary" id="empty-new">＋ Créer une commande</button></div>
         <div class="table-footer"><span id="results-count">0 commande</span><span>Les montants sont en dirhams marocains (MAD)</span></div>
       </section>
@@ -64,8 +65,12 @@
         <label class="field full">Produit(s) commandé(s)<textarea name="items" required rows="2" maxlength="500" placeholder="Ex. Lampe de bureau × 1"></textarea></label>
         <label class="field">Montant total (MAD)<input name="total" type="number" required min="0" step="0.01" placeholder="0.00"></label>
         <label class="field">Montant payé (MAD)<input name="paid" type="number" min="0" step="0.01" value="0"></label>
+        <label class="field">Coût des produits (MAD)<input name="cost" type="number" min="0" step="0.01" value="0" placeholder="0.00"></label>
+        <label class="field">Frais d’envoi / import (MAD)<input name="fees" type="number" min="0" step="0.01" value="0" placeholder="0.00"></label>
         <label class="field">Statut de la commande<select name="status"><option value="new">Nouvelle</option><option value="processing">En préparation</option><option value="shipped">Expédiée</option><option value="delivered">Livrée</option><option value="cancelled">Annulée</option></select></label>
         <label class="field">Mode de paiement<select name="method"><option value="cash">Espèces à la livraison</option><option value="transfer">Virement bancaire</option><option value="mobile">Paiement mobile</option><option value="other">Autre / à confirmer</option></select></label>
+        <label class="field">Transporteur<input name="carrier" maxlength="60" placeholder="Ex. Amana, Cathedis…"></label>
+        <label class="field">N° de suivi<input name="tracking" maxlength="100" placeholder="Numéro ou lien de suivi"></label>
         <label class="field full">Note interne <textarea name="note" rows="2" maxlength="300" placeholder="Optionnel — visible uniquement dans votre gestionnaire"></textarea></label>
       </div>
       <div class="form-error" id="form-error" role="alert"></div>
@@ -73,9 +78,17 @@
     </form>
   </dialog>
 
+  <dialog id="cloud-dialog" class="dialog small-dialog">
+    <div class="dialog-head"><div><div class="eyebrow">SAUVEGARDE PRIVÉE</div><h2 id="cloud-title">Synchroniser vos commandes</h2></div><button type="button" class="icon-button" data-close="cloud-dialog" aria-label="Fermer">×</button></div>
+    <p class="muted" id="cloud-description">Connectez-vous avec votre compte administrateur SoukLink pour synchroniser vos commandes en privé entre vos appareils.</p>
+    <form id="cloud-login-form" class="cloud-login-form"><label class="field">E-mail administrateur<input name="email" type="email" required autocomplete="username"></label><label class="field">Mot de passe<input name="password" type="password" required autocomplete="current-password"></label><div class="form-error" id="cloud-error" role="alert"></div><div class="dialog-actions"><button type="button" class="button secondary" data-close="cloud-dialog">Fermer</button><button class="button primary" type="submit">Se connecter et synchroniser</button></div></form>
+    <div class="cloud-connected" id="cloud-connected" hidden><div class="dialog-actions"><button class="button secondary" id="cloud-restore">Récupérer depuis le cloud</button><button class="button primary" id="cloud-signout">Déconnecter</button></div></div>
+  </dialog>
+
   <dialog id="receipt-dialog" class="dialog receipt-dialog"><div class="receipt-actions"><button class="button secondary" data-close="receipt-dialog">Fermer</button><button class="button primary" id="print-receipt">Imprimer / Enregistrer PDF</button></div><article id="receipt" class="receipt"></article></dialog>
   <dialog id="delete-dialog" class="dialog small-dialog"><div class="dialog-head"><div><div class="eyebrow">SUPPRESSION</div><h2>Supprimer cette commande ?</h2></div><button type="button" class="icon-button" data-close="delete-dialog" aria-label="Fermer">×</button></div><p class="muted">Cette action est définitive sur cet appareil. Pensez à exporter vos données régulièrement.</p><div class="dialog-actions"><button class="button secondary" data-close="delete-dialog">Annuler</button><button class="button danger" id="confirm-delete">Supprimer</button></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="app.js?v=3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.js" crossorigin="anonymous"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
