@@ -1,0 +1,3 @@
+Mandarin Quest is prepared as a Progressive Web App (PWA).
+
+To install it in Chrome like SoukLink Order Desk, publish this folder on an HTTPS static host (for example GitHub Pages). Then open install.html on that public HTTPS address and use Chrome's Install app menu. The service worker supports offline access to the course shell and local content; YouTube requires an internet connection.
