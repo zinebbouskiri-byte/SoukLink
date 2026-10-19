@@ -1,0 +1,15 @@
+{
+  "id": "./",
+  "name": "Mandarin Quest — Learn Chinese",
+  "short_name": "Mandarin Quest",
+  "description": "Learn Chinese with HSK 1–4 lessons, practice, listening and videos.",
+  "lang": "en",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8f2",
+  "theme_color": "#29955b",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
